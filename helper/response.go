@@ -1,7 +1,7 @@
 package helper
 
 import (
-	"crud-database/models"
+	"github.com/justjundana/go-crud-mysql/models"
 )
 
 type UserFormatter struct {

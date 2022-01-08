@@ -1,8 +1,8 @@
 package main
 
 import (
-	"crud-database/helper"
-	"crud-database/routes"
+	"github.com/justjundana/go-crud-mysql/helper"
+	"github.com/justjundana/go-crud-mysql/routes"
 )
 
 func main() {

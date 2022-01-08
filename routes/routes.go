@@ -1,10 +1,10 @@
 package routes
 
 import (
-	"crud-database/handler"
-	"crud-database/helper"
-	"crud-database/repository"
-	"crud-database/service"
+	"github.com/justjundana/go-crud-mysql/handler"
+	"github.com/justjundana/go-crud-mysql/helper"
+	"github.com/justjundana/go-crud-mysql/repository"
+	"github.com/justjundana/go-crud-mysql/service"
 
 	"github.com/labstack/echo/v4"
 )

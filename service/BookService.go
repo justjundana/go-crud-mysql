@@ -1,10 +1,11 @@
 package service
 
 import (
-	"crud-database/helper"
-	"crud-database/models"
-	"crud-database/repository"
 	"time"
+
+	"github.com/justjundana/go-crud-mysql/helper"
+	"github.com/justjundana/go-crud-mysql/models"
+	"github.com/justjundana/go-crud-mysql/repository"
 )
 
 type BookService interface {

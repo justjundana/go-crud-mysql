@@ -1,9 +1,10 @@
 package repository
 
 import (
-	"crud-database/models"
 	"database/sql"
 	"log"
+
+	"github.com/justjundana/go-crud-mysql/models"
 )
 
 type UserRepository interface {

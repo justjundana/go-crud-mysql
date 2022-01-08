@@ -1,4 +1,4 @@
-module crud-database
+module github.com/justjundana/go-crud-mysql
 
 go 1.17
 
