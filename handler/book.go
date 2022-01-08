@@ -6,7 +6,6 @@ import (
 
 	"github.com/justjundana/go-crud-mysql/helper"
 	"github.com/justjundana/go-crud-mysql/service"
-
 	"github.com/labstack/echo/v4"
 )
 

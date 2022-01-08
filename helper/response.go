@@ -4,6 +4,17 @@ import (
 	"github.com/justjundana/go-crud-mysql/models"
 )
 
+type AuthFormat struct {
+	Token string `json:"token"`
+}
+
+func FormatAuth(user models.User, token string) AuthFormat {
+	formatter := AuthFormat{
+		Token: token,
+	}
+	return formatter
+}
+
 type UserFormatter struct {
 	ID    int    `json:"id"`
 	Name  string `json:"name"`

@@ -5,17 +5,42 @@ import (
 	"strconv"
 
 	"github.com/justjundana/go-crud-mysql/helper"
+	"github.com/justjundana/go-crud-mysql/middleware"
 	"github.com/justjundana/go-crud-mysql/service"
-
 	"github.com/labstack/echo/v4"
 )
 
 type userHandler struct {
+	authService middleware.JWTService
 	userService service.UserService
 }
 
-func NewUserHandler(userService service.UserService) *userHandler {
-	return &userHandler{userService}
+func NewUserHandler(authService middleware.JWTService, userService service.UserService) *userHandler {
+	return &userHandler{authService, userService}
+}
+
+func (h *userHandler) AuthUserHandler(c echo.Context) error {
+	var input helper.LoginUserRequest
+	if err := c.Bind(&input); err != nil {
+		response := helper.APIResponse("Failed Login User", http.StatusUnprocessableEntity, false, nil)
+		return c.JSON(http.StatusUnprocessableEntity, response)
+	}
+
+	loginUser, err := h.userService.LoginUserService(input)
+	if err != nil {
+		response := helper.APIResponse("Failed Login User", http.StatusBadRequest, false, nil)
+		return c.JSON(http.StatusBadRequest, response)
+	}
+
+	token, err := h.authService.GenerateToken(loginUser.ID)
+	if err != nil {
+		response := helper.APIResponse("Failed Login User", http.StatusBadRequest, false, nil)
+		return c.JSON(http.StatusBadRequest, response)
+	}
+
+	formatter := helper.FormatAuth(loginUser, token)
+	response := helper.APIResponse("Success Login User", http.StatusOK, true, formatter)
+	return c.JSON(http.StatusOK, response)
 }
 
 func (h *userHandler) GetUsersHandler(c echo.Context) error {

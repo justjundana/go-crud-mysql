@@ -8,6 +8,7 @@ import (
 )
 
 type UserRepository interface {
+	FindByEmail(email string) (models.User, error)
 	GetUsers() ([]models.User, error)
 	CreateUser(user models.User) (models.User, error)
 	GetUser(id int) (models.User, error)
@@ -21,6 +22,18 @@ type userRepository struct {
 
 func NewUserRepository(db *sql.DB) *userRepository {
 	return &userRepository{db}
+}
+
+func (r *userRepository) FindByEmail(email string) (models.User, error) {
+	row := r.db.QueryRow(`SELECT id, email, password FROM users WHERE email = ?;`, email)
+	var user models.User
+
+	err := row.Scan(&user.ID, &user.Email, &user.Password)
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
 }
 
 // get all users
@@ -67,9 +80,9 @@ func (r *userRepository) CreateUser(user models.User) (models.User, error) {
 func (r *userRepository) GetUser(id int) (models.User, error) {
 	var user models.User
 
-	row := r.db.QueryRow(`SELECT id, name, email, created_at, updated_at FROM users WHERE id = ?`, id)
+	row := r.db.QueryRow(`SELECT id, name, email FROM users WHERE id = ?`, id)
 
-	err := row.Scan(&user.ID, &user.Name, &user.Email, &user.CreatedAt, &user.UpdatedAt)
+	err := row.Scan(&user.ID, &user.Name, &user.Email)
 	if err != nil {
 		return user, err
 	}

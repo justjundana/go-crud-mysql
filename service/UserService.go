@@ -6,9 +6,11 @@ import (
 	"github.com/justjundana/go-crud-mysql/helper"
 	"github.com/justjundana/go-crud-mysql/models"
 	"github.com/justjundana/go-crud-mysql/repository"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserService interface {
+	LoginUserService(input helper.LoginUserRequest) (models.User, error)
 	GetUsersService() ([]models.User, error)
 	GetUserService(id int) (models.User, error)
 	CreateUserService(input helper.CreateUserRequest) (models.User, error)
@@ -22,6 +24,24 @@ type userService struct {
 
 func NewUserService(repository repository.UserRepository) *userService {
 	return &userService{repository}
+}
+
+func (s *userService) LoginUserService(input helper.LoginUserRequest) (models.User, error) {
+	email := input.Email
+	password := input.Password
+
+	var user models.User
+	user, err := s.repository.FindByEmail(email)
+	if err != nil {
+		return user, err
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
 }
 
 func (s *userService) GetUsersService() ([]models.User, error) {
@@ -44,7 +64,11 @@ func (s *userService) CreateUserService(input helper.CreateUserRequest) (models.
 	user := models.User{}
 	user.Name = input.Name
 	user.Email = input.Email
-	user.Password = input.Password
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.MinCost)
+	if err != nil {
+		return user, err
+	}
+	user.Password = string(passwordHash)
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
 
@@ -63,7 +87,11 @@ func (s *userService) UpdateUserService(id int, input helper.EditUserRequest) (m
 
 	user.Name = input.Name
 	user.Email = input.Email
-	user.Password = input.Password
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.MinCost)
+	if err != nil {
+		return user, err
+	}
+	user.Password = string(passwordHash)
 	user.UpdatedAt = time.Now()
 
 	updateUser, err := s.repository.UpdateUser(user)
