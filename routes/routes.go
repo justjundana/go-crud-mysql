@@ -1,8 +1,9 @@
 package routes
 
 import (
+	"database/sql"
+
 	"github.com/justjundana/go-crud-mysql/handler"
-	"github.com/justjundana/go-crud-mysql/helper"
 	"github.com/justjundana/go-crud-mysql/middleware"
 	"github.com/justjundana/go-crud-mysql/repository"
 	"github.com/justjundana/go-crud-mysql/service"
@@ -10,13 +11,13 @@ import (
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
 )
 
-func New() *echo.Echo {
+func Router(db *sql.DB) *echo.Echo {
 	// create a new echo instance
 	e := echo.New()
 	e.Pre(echoMiddleware.RemoveTrailingSlash())
 	authService := middleware.AuthService()
 	// Route User
-	userRepository := repository.NewUserRepository(helper.DB)
+	userRepository := repository.NewUserRepository(db)
 	userService := service.NewUserService(userRepository)
 	userHandler := handler.NewUserHandler(authService, userService)
 
@@ -28,7 +29,7 @@ func New() *echo.Echo {
 	e.DELETE("/users/:id", middleware.AuthMiddleware(authService, userService, userHandler.DeleteUserHandler))
 
 	// Route Book
-	bookRepository := repository.NewBookRepository(helper.DB)
+	bookRepository := repository.NewBookRepository(db)
 	bookService := service.NewBookService(bookRepository)
 	bookHandler := handler.NewBookHandler(bookService)
 
