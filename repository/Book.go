@@ -3,7 +3,6 @@ package repository
 import (
 	"crud-database/models"
 	"database/sql"
-	"fmt"
 	"log"
 )
 
@@ -28,10 +27,8 @@ func (r *bookRepository) GetBooks() ([]models.Book, error) {
 	var books []models.Book
 	rows, err := r.db.Query(`SELECT id, code, title, description, author, publisher FROM books ORDER BY id ASC`)
 	if err != nil {
-		log.Fatalf("Unable to execute the query. %v", err)
+		log.Fatalf("Error")
 	}
-
-	fmt.Println(rows)
 
 	defer rows.Close()
 
@@ -40,7 +37,7 @@ func (r *bookRepository) GetBooks() ([]models.Book, error) {
 
 		err = rows.Scan(&book.ID, &book.Code, &book.Title, &book.Description, &book.Author, &book.Publisher)
 		if err != nil {
-			log.Fatalf("Unable to scan the row. %v", err)
+			log.Fatalf("Error")
 		}
 
 		books = append(books, book)

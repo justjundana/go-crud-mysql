@@ -24,7 +24,13 @@ func (h *bookHandler) GetBooksHandler(c echo.Context) error {
 		return c.JSON(http.StatusOK, response)
 	}
 
-	response := helper.APIResponse("Success Fetch Book Data", http.StatusOK, true, books)
+	var data []helper.BookFormatter
+	for i := 0; i < len(books); i++ {
+		formatter := helper.FormatBook(books[i])
+		data = append(data, formatter)
+	}
+
+	response := helper.APIResponse("Success Fetch Book Data", http.StatusOK, true, data)
 	return c.JSON(http.StatusOK, response)
 }
 
@@ -41,7 +47,8 @@ func (h *bookHandler) GetBookHandler(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, response)
 	}
 
-	response := helper.APIResponse("Success Get Book By ID", http.StatusOK, true, book)
+	formatter := helper.FormatBook(book)
+	response := helper.APIResponse("Success Get Book By ID", http.StatusOK, true, formatter)
 	return c.JSON(http.StatusOK, response)
 }
 
@@ -58,7 +65,8 @@ func (h *bookHandler) CreateBookHandler(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, response)
 	}
 
-	response := helper.APIResponse("Success Create New Book", http.StatusOK, true, newBook)
+	formatter := helper.FormatBook(newBook)
+	response := helper.APIResponse("Success Create New Book", http.StatusOK, true, formatter)
 	return c.JSON(http.StatusOK, response)
 }
 
@@ -81,7 +89,8 @@ func (h *bookHandler) UpdateBookHandler(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, response)
 	}
 
-	response := helper.APIResponse("Success Update Book", http.StatusOK, true, updateBook)
+	formatter := helper.FormatBook(updateBook)
+	response := helper.APIResponse("Success Update Book", http.StatusOK, true, formatter)
 	return c.JSON(http.StatusOK, response)
 }
 
@@ -92,12 +101,13 @@ func (h *bookHandler) DeleteBookHandler(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, response)
 	}
 
-	Book, err := h.bookService.DeleteBookService(id)
+	book, err := h.bookService.DeleteBookService(id)
 	if err != nil {
 		response := helper.APIResponse("Failed Delete Book", http.StatusBadRequest, false, nil)
 		return c.JSON(http.StatusBadRequest, response)
 	}
 
-	response := helper.APIResponse("Success Delete Book", http.StatusOK, true, Book)
+	formatter := helper.FormatBook(book)
+	response := helper.APIResponse("Success Delete Book", http.StatusOK, true, formatter)
 	return c.JSON(http.StatusOK, response)
 }

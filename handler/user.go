@@ -24,24 +24,31 @@ func (h *userHandler) GetUsersHandler(c echo.Context) error {
 		return c.JSON(http.StatusOK, response)
 	}
 
-	response := helper.APIResponse("Success Fetch User Data", http.StatusOK, true, users)
+	var data []helper.UserFormatter
+	for i := 0; i < len(users); i++ {
+		formatter := helper.FormatUser(users[i])
+		data = append(data, formatter)
+	}
+
+	response := helper.APIResponse("Success Fetch User Data", http.StatusOK, true, data)
 	return c.JSON(http.StatusOK, response)
 }
 
 func (h *userHandler) GetUserHandler(c echo.Context) error {
 	id, errId := strconv.Atoi(c.Param("id"))
 	if errId != nil {
-		response := helper.APIResponse("Failed Get Book By ID", http.StatusInternalServerError, false, nil)
+		response := helper.APIResponse("Failed Get User By ID", http.StatusInternalServerError, false, nil)
 		return c.JSON(http.StatusInternalServerError, response)
 	}
 
-	book, err := h.userService.GetUserService(id)
+	user, err := h.userService.GetUserService(id)
 	if err != nil {
-		response := helper.APIResponse("Failed Get Book By ID", http.StatusBadRequest, false, nil)
+		response := helper.APIResponse("Failed Get User By ID", http.StatusBadRequest, false, nil)
 		return c.JSON(http.StatusBadRequest, response)
 	}
 
-	response := helper.APIResponse("Success Get Book By ID", http.StatusOK, true, book)
+	formatter := helper.FormatUser(user)
+	response := helper.APIResponse("Success Get User By ID", http.StatusOK, true, formatter)
 	return c.JSON(http.StatusOK, response)
 }
 
@@ -58,7 +65,8 @@ func (h *userHandler) CreateUserHandler(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, response)
 	}
 
-	response := helper.APIResponse("Success Create New User", http.StatusOK, true, newUser)
+	formatter := helper.FormatUser(newUser)
+	response := helper.APIResponse("Success Create New User", http.StatusOK, true, formatter)
 	return c.JSON(http.StatusOK, response)
 }
 
@@ -81,7 +89,8 @@ func (h *userHandler) UpdateUserHandler(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, response)
 	}
 
-	response := helper.APIResponse("Success Update User", http.StatusOK, true, updateUser)
+	formatter := helper.FormatUser(updateUser)
+	response := helper.APIResponse("Success Update User", http.StatusOK, true, formatter)
 	return c.JSON(http.StatusOK, response)
 }
 
@@ -98,6 +107,7 @@ func (h *userHandler) DeleteUserHandler(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, response)
 	}
 
-	response := helper.APIResponse("Success Delete User", http.StatusOK, true, user)
+	formatter := helper.FormatUser(user)
+	response := helper.APIResponse("Success Delete User", http.StatusOK, true, formatter)
 	return c.JSON(http.StatusOK, response)
 }

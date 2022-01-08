@@ -3,7 +3,6 @@ package repository
 import (
 	"crud-database/models"
 	"database/sql"
-	"fmt"
 	"log"
 )
 
@@ -28,10 +27,8 @@ func (r *userRepository) GetUsers() ([]models.User, error) {
 	var users []models.User
 	rows, err := r.db.Query(`SELECT id, name, email FROM users ORDER BY id ASC`)
 	if err != nil {
-		log.Fatalf("Unable to execute the query. %v", err)
+		log.Fatalf("Error")
 	}
-
-	fmt.Println(rows)
 
 	defer rows.Close()
 
@@ -40,7 +37,7 @@ func (r *userRepository) GetUsers() ([]models.User, error) {
 
 		err = rows.Scan(&user.ID, &user.Name, &user.Email)
 		if err != nil {
-			log.Fatalf("Unable to scan the row. %v", err)
+			log.Fatalf("Error")
 		}
 
 		users = append(users, user)
@@ -69,9 +66,9 @@ func (r *userRepository) CreateUser(user models.User) (models.User, error) {
 func (r *userRepository) GetUser(id int) (models.User, error) {
 	var user models.User
 
-	row := r.db.QueryRow(`SELECT id, name, email FROM users WHERE id = ?`, id)
+	row := r.db.QueryRow(`SELECT id, name, email, created_at, updated_at FROM users WHERE id = ?`, id)
 
-	err := row.Scan(&user.ID, &user.Name, &user.Email)
+	err := row.Scan(&user.ID, &user.Name, &user.Email, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		return user, err
 	}
