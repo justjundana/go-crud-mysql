@@ -39,5 +39,16 @@ func Router(db *sql.DB) *echo.Echo {
 	e.PUT("/books/:id", middleware.AuthMiddleware(authService, userService, bookHandler.UpdateBookHandler))
 	e.DELETE("/books/:id", middleware.AuthMiddleware(authService, userService, bookHandler.DeleteBookHandler))
 
+	// Route Product
+	productRepository := repository.NewProductRepository(db)
+	productService := service.NewProductService(productRepository)
+	productHandler := handler.NewProductHandler(productService)
+
+	e.GET("/products", productHandler.GetProductsHandler)
+	e.POST("/products", middleware.AuthMiddleware(authService, userService, productHandler.CreateProductHandler))
+	e.GET("/products/:id", productHandler.GetProductHandler)
+	e.PUT("/products/:id", middleware.AuthMiddleware(authService, userService, productHandler.UpdateProductHandler))
+	e.DELETE("/products/:id", middleware.AuthMiddleware(authService, userService, productHandler.DeleteProductHandler))
+
 	return e
 }

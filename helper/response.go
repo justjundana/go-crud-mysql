@@ -50,3 +50,26 @@ func FormatBook(book models.Book) BookFormatter {
 	}
 	return formatter
 }
+
+type ProductFormatter struct {
+	ID          int           `json:"id"`
+	Name        string        `json:"name"`
+	Description string        `json:"description"`
+	Price       float64       `json:"price"`
+	User        UserFormatter `json:"user"`
+}
+
+func FormatProduct(product models.Product) ProductFormatter {
+	formatter := ProductFormatter{
+		ID:          product.ID,
+		Name:        product.Name,
+		Description: product.Description,
+		Price:       product.Price,
+		User: UserFormatter{
+			ID:    product.User.ID,
+			Name:  product.User.Name,
+			Email: product.User.Email,
+		},
+	}
+	return formatter
+}
