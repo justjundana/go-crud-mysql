@@ -26,18 +26,12 @@ func NewBookService(repository repository.BookRepository) *bookService {
 
 func (s *bookService) GetBooksService() ([]models.Book, error) {
 	books, err := s.repository.GetBooks()
-	if err != nil {
-		return books, err
-	}
-	return books, nil
+	return books, err
 }
 
 func (s *bookService) GetBookService(id int) (models.Book, error) {
 	book, err := s.repository.GetBook(id)
-	if err != nil {
-		return book, err
-	}
-	return book, nil
+	return book, err
 }
 
 func (s *bookService) CreateBookService(input helper.CreateBookRequest) (models.Book, error) {
@@ -51,10 +45,7 @@ func (s *bookService) CreateBookService(input helper.CreateBookRequest) (models.
 	book.UpdatedAt = time.Now()
 
 	createBook, err := s.repository.CreateBook(book)
-	if err != nil {
-		return createBook, err
-	}
-	return createBook, nil
+	return createBook, err
 }
 
 func (s *bookService) UpdateBookService(id int, input helper.EditBookRequest) (models.Book, error) {
@@ -70,10 +61,7 @@ func (s *bookService) UpdateBookService(id int, input helper.EditBookRequest) (m
 	book.UpdatedAt = time.Now()
 
 	updateBook, err := s.repository.UpdateBook(book)
-	if err != nil {
-		return updateBook, err
-	}
-	return updateBook, nil
+	return updateBook, err
 }
 
 func (s *bookService) DeleteBookService(id int) (models.Book, error) {
@@ -83,9 +71,5 @@ func (s *bookService) DeleteBookService(id int) (models.Book, error) {
 	}
 
 	deleteBook, err := s.repository.DeleteBook(bookID)
-	if err != nil {
-		return deleteBook, err
-	} else {
-		return deleteBook, nil
-	}
+	return deleteBook, err
 }
